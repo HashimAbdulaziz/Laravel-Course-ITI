@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
@@ -11,39 +11,31 @@ class PostController extends Controller
     public function __construct()
     {
         $this->posts = [
-            ['id' => 1, 'title' => 'Post 1', 'body' => 'This is the body of post 1'],
-            ['id' => 2, 'title' => 'Post 2', 'body' => 'This is the body of post 2'],
-            ['id' => 3, 'title' => 'Post 3', 'body' => 'This is the body of post 3'],
+            ['id' => 1, 'title' => 'Post 1', 'description' => 'This is the description of post 1', 'post_creator_name' => 'John Doe', 'post_creator_email' => 'john@example.com', 'created_at' => '2023-10-01 10:00:00'],
+            ['id' => 2, 'title' => 'Post 2', 'description' => 'This is the description of post 2', 'post_creator_name' => 'Jane Doe', 'post_creator_email' => 'jane@example.com', 'created_at' => '2023-10-02 11:30:00'],
+            ['id' => 3, 'title' => 'Post 3', 'description' => 'This is the description of post 3', 'post_creator_name' => 'Sam Smith', 'post_creator_email' => 'sam@example.com', 'created_at' => '2023-10-03 14:15:00'],
         ];
     }
 
-
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('posts.index', ['posts' => $this->posts]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('posts.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $newPost = [
             'id' => count($this->posts) + 1,
             'title' => $request->input('title'),
-            'body' => $request->input('body')
+            'description' => $request->input('description'),
+            'post_creator_name' => $request->input('post_creator_name'),
+            'post_creator_email' => $request->input('post_creator_email'),
+            'created_at' => date('Y-m-d H:i:s')
         ];
 
         $this->posts[] = $newPost;
@@ -51,13 +43,8 @@ class PostController extends Controller
         dd($this->posts);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-
-
         $post = array_filter($this->posts, function($post) use ($id){
             return $post['id'] == $id;
         });
@@ -69,9 +56,6 @@ class PostController extends Controller
         return view('posts.show', ['post' => reset($post)]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $post = array_filter($this->posts, function($post) use ($id){
@@ -85,15 +69,14 @@ class PostController extends Controller
         return view('posts.edit', ['post' => reset($post)]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         foreach ($this->posts as $index => $post) {
             if ($post['id'] == $id) {
                 $this->posts[$index]['title'] = $request->input('title');
-                $this->posts[$index]['body'] = $request->input('body');
+                $this->posts[$index]['description'] = $request->input('description');
+                $this->posts[$index]['post_creator_name'] = $request->input('post_creator_name');
+                $this->posts[$index]['post_creator_email'] = $request->input('post_creator_email');
                 break;
             }
         }
@@ -101,9 +84,6 @@ class PostController extends Controller
         dd($this->posts);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         foreach ($this->posts as $index => $post) {

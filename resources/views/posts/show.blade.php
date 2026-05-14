@@ -7,9 +7,14 @@
    <title>Post</title>
 </head>
 <body>
-   <h1>{{ $post['title'] }}</h1>
+   <h2>postinfo:</h2>
+   <p>Title: {{ $post['title'] }}</p>
+   <p>Description: {{ $post['description'] }}</p>
 
-   <p>{{ $post['body'] }}</p>
+   <h2>Post creator inf:</h2>
+   <p>Name: {{ $post['post_creator_name'] }}</p>
+   <p>Email: {{ $post['post_creator_email'] }}</p>
+   <p>Created at: {{ $post['created_at'] }}</p>
 
    <hr>
    
