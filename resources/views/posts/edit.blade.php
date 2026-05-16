@@ -1,9 +1,21 @@
 <x-layout title="Edit Post">
     <h1 class="mb-6 text-2xl font-bold">Edit Post</h1>
 
-    <form action="/posts/{{ $post->id }}" method="POST">
+    <form action="/posts/{{ $post->id }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH') 
+
+        <div class="mb-4">
+            <label for="image" class="block text-sm font-semibold">Post Image</label>
+            <input type="file" name="image" id="image" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-700">
+            
+            <x-forms.error name="image" />
+            
+            @if($post->image)
+                <p class="text-xs text-gray-500 mt-2">Current Image:</p>
+                <img src="{{ asset('storage/' . $post->image) }}" class="w-24 h-24 object-cover mt-1 rounded">
+            @endif
+        </div>
 
         <div class="mb-4">
             <label for="title" class="block text-sm font-semibold">Title</label>

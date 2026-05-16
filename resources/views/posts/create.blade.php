@@ -1,8 +1,15 @@
 <x-layout title="Create Post">
     <h1 class="mb-6 text-2xl font-bold">Create a New Post</h1>
 
-    <form action="/posts" method="POST">
+    <form action="/posts" method="POST" class="space-y-6" enctype="multipart/form-data">
         @csrf 
+
+        <div>
+            <label for='image' class="block text-sm font-medium text-gray-700">Post Image</label>
+            <input type="file" name="image" id="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            
+            <x-forms.error name="image" />
+        </div>
 
         <div class="mb-4">
             <label for="title" class="block text-sm font-semibold">Title</label>

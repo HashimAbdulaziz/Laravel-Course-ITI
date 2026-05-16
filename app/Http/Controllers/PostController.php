@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Post;
-use Illuminate\Http\Request;
-
-
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -35,13 +34,16 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePostRequest $request) 
+    public function store(StorePostRequest $request)
     {
-        Post::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'user_id' => $request->input('user_id') 
-        ]);
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('posts', 'public');
+            $validatedData['image'] = $path;
+        }
+
+        Post::create($validatedData);
 
         return redirect('/posts');
     }
@@ -75,20 +77,21 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, string $id) 
+    public function update(UpdatePostRequest $request, string $id)
     {
-        $post = Post::find($id);
+        $post = Post::findOrFail($id);
+        $validatedData = $request->validated();
 
-
-        if (!$post) {
-            abort(404);
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            
+            $path = $request->file('image')->store('posts', 'public');
+            $validatedData['image'] = $path;
         }
 
-        $post->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'user_id' => $request->input('user_id')
-        ]);
+        $post->update($validatedData);
 
         return redirect('/posts/' . $id);
     }
@@ -98,10 +101,10 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        $post = Post::find($id);
+        $post = Post::findOrFail($id); 
 
-        if (!$post) {
-            abort(404);
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
         }
 
         $post->delete();
