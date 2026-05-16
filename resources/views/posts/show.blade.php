@@ -40,9 +40,20 @@
         <div class="space-y-4">
             @foreach($post->comments as $comment)
                 <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="font-bold text-sm text-gray-900">{{ $comment->user->name ?? 'Anonymous' }}</span>
-                        <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-gray-900">{{ $comment->user->name ?? 'Anonymous' }}</span>
+                            <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                        </div>
+                        @auth
+                            @if(auth()->id() === $comment->user_id)
+                                <form action="/posts/comments/{{ $comment->id }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs text-red-600 hover:text-red-800">Delete</button>
+                                </form>
+                            @endif
+                        @endauth
                     </div>
                     <p class="text-gray-700">{{ $comment->body }}</p>
                 </div>

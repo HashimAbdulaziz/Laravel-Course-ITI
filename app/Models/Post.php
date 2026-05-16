@@ -52,4 +52,9 @@ class Post extends Model
             set: fn (string $value) => trim($value),
         );
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
